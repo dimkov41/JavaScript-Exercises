@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DOM Search</title>
+    <script src="jQuery.js"></script>
+    <style>
+        .add-controls, .search-controls {
+            width: 20em;
+            height: 2em;
+        }
+
+        input {
+            position: absolute;
+            left: 6em;
+        }
+
+        .button {
+            background-color: darkgrey;
+            color: white;
+            font-weight: bold;
+            position: absolute;
+            left: 15em;
+            border: 1px solid black;
+            padding: 0 5px 0 5px;
+        }
+
+        .result-controls .button {
+            position: relative;
+            left: 0;
+            font-size: 50%;
+            margin-right: 1em;
+            padding: 0;
+            bottom: 3px;
+        }
+
+        li {
+            list-style-type: none;
+        }
+    </style>
+</head>
+<body>
+<div id="content"></div>
+<script>
+    //when document is ready
+    $(domSearch("#content", false));
+
+
+    function domSearch(selector, caseSensitive) {
+        (function createFields(selector) {
+            $(selector)
+                .append(createAddField())
+                .append(createSearchField())
+                .append(
+                    $("<div>")
+                        .addClass("result-controls")
+                        .append(
+                            $("<ul>")
+                                .addClass("items-list"))
+                );
+
+
+            function createSearchField() {
+                return $("<div>")
+                    .addClass("search-controls")
+                    .append(
+                        $("<label>")
+                            .text("Search:")
+                    )
+                    .append(
+                        $("<input>")
+                            .attr("type", "text")
+                            .attr("id", "search")
+                    );
+            }
+
+            function createAddField() {
+                return $("<div>")
+                    .addClass("add-controls")
+                    .append(
+                        $("<label>")
+                            .text("Enter text:")
+                    )
+                    .append(
+                        $("<input>")
+                            .attr("type", "text")
+                            .attr("id", "add")
+                    )
+                    .append(
+                        $("<a>")
+                            .addClass("button")
+                            .text("Add")
+                    );
+            }
+        })(selector);
+
+        //add
+        $(".button").click(function () {
+
+            $(".items-list")
+                .append(
+                    $("<li>")
+                        .addClass("list-item")
+                        .append(
+                            $("<a>")
+                                .addClass("button")
+                                .text("X")
+                                .click(deleteItem))
+                        .append(
+                            $("<strong>")
+                                .append(
+                                    $("#add")
+                                        .val())));
+
+            $("#add").val("");
+
+
+            function deleteItem() {
+                $(this).parent().remove();
+            }
+        });
+
+        //search
+        $("#search").on("input", function () {
+            let text = $("#search").val();
+
+            $(".items-list .list-item").each(function (k, li) {
+                $(li).css("display","block");
+
+                if (caseSensitive) {
+                    if (!$(li).find("strong").text().includes(text)) {
+                        $(li).css("display","none");
+                    }
+                } else {
+                    if(!$(li).find("strong").text().toLowerCase().includes(text.toLowerCase())){
+                        $(li).css("display","none");
+                    }
+                }
+            })
+
+        });
+
+
+    }
+
+</script>
+</body>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calendar</title>
+    <script src="jQuery.js"></script>
+    <style>
+        table, th, td {
+            border: 1px solid black;
+            padding: 0.25em;
+            margin: 0;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
+        th, td {
+            width: 2.5em;
+        }
+
+        .today {
+            background-color: orange;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div id="content">
+
+</div>
+<script>
+    window.onload = function () {
+        calendar([15, 1, 2017]);
+    };
+
+    function calendar(calendar) {
+        const monthNames = ["January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+        const weekDays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+        let date = new Date(calendar[2], calendar[1] - 1, calendar[0]);
+
+        let table = $("<table>");
+
+        //append caption
+        table.append($("<caption>").text(`${monthNames[date.getMonth()]} ${date.getFullYear()}`));
+        //
+        //append days names
+        let tr = $("<tr>");
+        for (let i = 1; i < weekDays.length; i++) {
+            let th = $("<th>");
+            th.append(weekDays[i].substring(0, 3));
+            tr.append(th);
+        }
+        tr.append($("<th>").append(weekDays[0].substring(0, 3)));
+        table.append(tr);
+        //
+
+
+        //
+        let daysInMonth = getDaysInMonth(date.getMonth() + 1, date.getFullYear());
+        let firstDayOfMonth = new Date(date.getFullYear(), date.getMonth(), 1).getDay() === 0 ? 7 : new Date(date.getFullYear(), date.getMonth(), 1).getDay();
+
+        tr = $("<tr>");
+        let currentDay = 0;
+        let i = 1;
+        while (true) {
+            if (i >= firstDayOfMonth && daysInMonth > 0) {
+                currentDay++;
+                if (date.getDate() === currentDay) {
+                    tr.append($("<td>").addClass("today").text(currentDay))
+                } else {
+                    tr.append($("<td>").text(currentDay));
+                }
+                daysInMonth--;
+            } else {
+                tr.append($("<td>"));
+            }
+
+            if (i % 7 === 0) {
+
+                table.append(tr);
+                tr = $("<tr>");
+
+                if (daysInMonth === 0) break;
+            }
+            i++;
+        }
+
+        function getDaysInMonth(month, year) {
+            return new Date(year, month, 0).getDate();
+        }
+
+
+        $("#content").append(table);
+    }
+
+</script>
+</body>
+</html>

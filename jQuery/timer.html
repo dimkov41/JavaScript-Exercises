@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Timer</title>
+    <script src="jQuery.js"></script>
+    <style>
+        #timer {
+            font-size: 5em;
+        }
+    </style>
+</head>
+<body>
+<div id="timer">
+    <span id="hours" class="timer">00</span>:
+    <span id="minutes" class="timer">00</span>:
+    <span id="seconds" class="timer">00</span>
+    <button id="start-timer">Start</button>
+    <button id="stop-timer">Stop</button>
+</div>
+<script>
+    window.onload=function(){
+        timer();
+    };
+
+    function timer(){
+        $("#start-timer").one("click",start);
+
+        function start(){
+            let min = Number($("#minutes").text());
+            let sec = Number($("#seconds").text());
+            let hours = Number($("#hours").text());
+
+            let interval = setInterval(() =>{
+                sec++;
+                if(sec > 59){
+                    min++;
+                    sec = 0;
+                    if(min > 59){
+                        hours++;
+                        min = 0;
+                    }
+                }
+
+                $("#hours").text(hours < 10 ? `0${String(hours)}` : String(hours));
+                $("#minutes").text(min < 10 ? `0${String(min)}` : String(min));
+                $("#seconds").text(sec < 10 ? `0${String(sec)}` : String(sec));
+            },1000);
+
+            $("#stop-timer").click(() => {
+                clearInterval(interval);
+
+                $("#start-timer").one("click",start);
+            });
+
+        };
+    }
+
+</script>
+</body>
+</html>
