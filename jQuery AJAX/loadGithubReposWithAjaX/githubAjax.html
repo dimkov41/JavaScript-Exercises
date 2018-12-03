@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script
+            src="https://code.jquery.com/jquery-3.3.1.js"
+            integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60="
+            crossorigin="anonymous"></script>
+</head>
+<body>
+GitHub username:
+<input type="text" id="username" value="testnakov"/>
+<button onclick="loadRepos()">Load Repos</button>
+<ul id="repos"></ul>
+<script>
+    function loadRepos() {
+        $("#repos").empty();
+
+        let url = `https://api.github.com/users/${$("#username").val()}/repos`;
+        $.get(url, function (data) {
+            for (let currentObj of data) {
+                let repoName = String(currentObj.html_url).substring(String(currentObj.html_url).lastIndexOf("/") + 1);
+                let anchor = $("<a>").attr("href",currentObj.html_url).text(repoName);
+
+                let li = $("<li>").html(anchor);
+                $("#repos").append(li);
+            }
+        })
+            .fail(function () {
+                $("#repos").append($("<li>").text("Repository not found").css("color","red"));
+
+                let inputField = $("#username");
+                inputField.css("border", "solid red");
+            });
+    }
+</script>
+</body>
+</html>
